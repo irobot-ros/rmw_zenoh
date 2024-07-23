@@ -201,10 +201,10 @@ std::vector<std::string> split_keyexpr(
 }
 
 ///=============================================================================
-// Helper function to convert string to size_t.
-// The function is templated to enable conversion to size_t or std::size_t.
+// Helper function to convert string to uint64_t.
+// The function is templated to enable conversion to uint64_t
 template<typename T>
-std::optional<T> str_to_size_t(const std::string & str, const T default_value)
+std::optional<T> str_to_uint64_t(const std::string & str, const T default_value)
 {
   if (str.empty()) {
     return default_value;
@@ -215,7 +215,7 @@ std::optional<T> str_to_size_t(const std::string & str, const T default_value)
   // Depending on the architecture and platform, these may not be the same size.
   // Further, if the incoming str is a signed integer, storing it in a size_t is incorrect.
   // We should fix this piece of code to deal with both of those situations.
-  size_t num = strtoul(str.c_str(), &endptr, 10);
+  uint64_t num = strtoull(str.c_str(), &endptr, 10);
   if (endptr == str.c_str()) {
     // No values were converted, this is an error
     RMW_SET_ERROR_MSG("no valid numbers available");
@@ -340,15 +340,15 @@ std::optional<rmw_qos_profile_t> keyexpr_to_qos(const std::string & keyexpr)
     RMW_SET_ERROR_MSG_WITH_FORMAT_STRING("Error setting QoS values from strings: %s", e.what());
     return std::nullopt;
   }
-  const auto maybe_depth = str_to_size_t(history_parts[1], default_qos.depth);
-  const auto maybe_deadline_s = str_to_size_t(deadline_parts[0], default_qos.deadline.sec);
-  const auto maybe_deadline_ns = str_to_size_t(deadline_parts[1], default_qos.deadline.nsec);
-  const auto maybe_lifespan_s = str_to_size_t(lifespan_parts[0], default_qos.lifespan.sec);
-  const auto maybe_lifespan_ns = str_to_size_t(lifespan_parts[1], default_qos.lifespan.nsec);
-  const auto maybe_liveliness_s = str_to_size_t(
+  const auto maybe_depth = str_to_uint64_t(history_parts[1], default_qos.depth);
+  const auto maybe_deadline_s = str_to_uint64_t(deadline_parts[0], default_qos.deadline.sec);
+  const auto maybe_deadline_ns = str_to_uint64_t(deadline_parts[1], default_qos.deadline.nsec);
+  const auto maybe_lifespan_s = str_to_uint64_t(lifespan_parts[0], default_qos.lifespan.sec);
+  const auto maybe_lifespan_ns = str_to_uint64_t(lifespan_parts[1], default_qos.lifespan.nsec);
+  const auto maybe_liveliness_s = str_to_uint64_t(
     liveliness_parts[1],
     default_qos.liveliness_lease_duration.sec);
-  const auto maybe_liveliness_ns = str_to_size_t(
+  const auto maybe_liveliness_ns = str_to_uint64_t(
     liveliness_parts[2],
     default_qos.liveliness_lease_duration.nsec);
   if (maybe_depth == std::nullopt ||
