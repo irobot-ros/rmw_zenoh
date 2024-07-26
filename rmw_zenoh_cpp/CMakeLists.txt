@@ -70,6 +70,8 @@ target_link_libraries(rmw_zenoh_cpp
     rmw::rmw
     tracetools::tracetools
     zenohcxx::zenohc
+    pthread  # Link against pthread
+    rt       # Link against rt
 )
 
 configure_rmw_library(rmw_zenoh_cpp)
@@ -130,6 +132,8 @@ target_link_libraries(rmw_zenohd
     rcpputils::rcpputils
     rmw::rmw
     zenohcxx::zenohc
+    pthread  # Link against pthread
+    rt       # Link against rt
 )
 
 install(
